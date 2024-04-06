@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "langgraph-lesson"
+version = "0.1.0"
+description = ""
+authors = ["fxx <q2wxec@126.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+langchain-community = "^0.0.31"
+langchain = "^0.1.14"
+langgraph = "^0.0.32"
+langchain-openai = "^0.1.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[[tool.poetry.source]]
+name = "ali"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "primary"
