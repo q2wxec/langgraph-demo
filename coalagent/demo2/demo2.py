@@ -195,3 +195,5 @@ def demo2():
                     print(v)
 
     asyncio.run(print_event())
+    
+demo2()

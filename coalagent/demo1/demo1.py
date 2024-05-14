@@ -63,7 +63,7 @@ def demo1(day_range):
     with open('daily_summary.md', 'a', encoding='utf-8') as file:
         file.write(output)
 
-
+demo1(2)
 
 
 

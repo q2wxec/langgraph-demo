@@ -94,3 +94,9 @@ def demo3():
                     print(v)
 
     asyncio.run(print_event())
+    
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_PROJECT"]="Plan-and-execute"
+
+demo3()

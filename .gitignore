@@ -36,3 +36,4 @@ default.sqlite
 .streamlit/config.toml
 .streamlit/credentials.toml
 poetry.lock
+.env
