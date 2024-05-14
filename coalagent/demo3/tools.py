@@ -11,7 +11,7 @@ def get_html(url):
     # 访问每一个链接，提取文章内容
     r = requests.get(url)
     s = BeautifulSoup(r.text, 'html.parser')
-    content = s.select_one('div.content').get_text().strip()
+    content = s.get_text().strip()
     
     # 存储每一个文章的信息
     return {

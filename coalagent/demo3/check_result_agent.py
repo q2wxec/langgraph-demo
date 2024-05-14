@@ -7,7 +7,7 @@ from load_prompt import load_prompt
 class Response(BaseModel):
     """Response to user."""
     end: bool
-    response: str
+    response: object
         
     
 parser = PydanticOutputParser(pydantic_object=Response)

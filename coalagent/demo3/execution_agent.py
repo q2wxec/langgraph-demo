@@ -7,14 +7,12 @@ from langchain_core.runnables import  RunnablePassthrough,RunnableBranch,Runnabl
 from tools import search_tool
 from load_prompt import load_prompt
 
-# Get the prompt to use - you can modify this!
-prompt = hub.pull("hwchase17/openai-functions-agent")
 # Choose the LLM that will drive the agent
 llm = ChatOpenAI(model="glm-4",  temperature=0.01,openai_api_base="http://localhost:8778/v1",openai_api_key="123")
 
 # 判断是否需要使用搜索引擎提示词
 # 判断是否需要使用搜索工具
-use_tool_prompt =  ChatPromptTemplate.from_template(load_prompt("demo3/prompt/use_tool.prompt"))
+use_tool_prompt =  ChatPromptTemplate.from_template(load_prompt("demo3/prompt/tool_choose.prompt"))
 choose_tool_chain = {"use_search_tool":itemgetter("input") |use_tool_prompt|llm|StrOutputParser(),
                      "task":itemgetter("input")
                      }
@@ -25,8 +23,10 @@ get_search_query_prompt = ChatPromptTemplate.from_template(load_prompt("demo3/pr
 def get_answer(search_result):
     if "answer_box" in search_result:
         return search_result["answer_box"]
-    else:
+    elif "organic_results" in search_result:
         return search_result["organic_results"]
+    else:
+        return search_result
     
 def add_site(search_query):
     return search_query+' site:coalchina.org.cn'
@@ -39,8 +39,11 @@ search_with_tool ={
 excute_task_by_llm_prompt = ChatPromptTemplate.from_template(load_prompt("demo3/prompt/excute_by_llm.prompt"))
 answer_by_llm = {"result":itemgetter("task") |excute_task_by_llm_prompt|llm|StrOutputParser()}
 
+get_html_by_tool = {}
+
 branch = RunnableBranch(
-        (lambda x:x["use_search_tool"] == 'true', search_with_tool),
+        (lambda x:x["use_search_tool"] == '1', search_with_tool),
+        (lambda x:x["use_search_tool"] == '2', get_html_by_tool),
         answer_by_llm
     )
 

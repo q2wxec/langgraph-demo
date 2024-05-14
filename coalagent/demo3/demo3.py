@@ -85,7 +85,7 @@ def demo3():
     from langchain_core.messages import HumanMessage
 
     config = {"recursion_limit": 50}
-    inputs = {"input": "陕西省申报绿色矿山的条件是什么?"}
+    inputs = {"input": "请列举陕西省申报绿色矿山的明细要求?"}
     print()
     async def print_event():
         async for event in app.astream(inputs, config=config):
