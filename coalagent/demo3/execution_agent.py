@@ -4,7 +4,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 from operator import itemgetter
 from langchain_core.runnables import  RunnablePassthrough,RunnableBranch,RunnableLambda
-from tools import search_tool
+from tools import search_tool,get_html
 from load_prompt import load_prompt
 
 # Choose the LLM that will drive the agent
@@ -20,11 +20,17 @@ choose_tool_chain = {"use_search_tool":itemgetter("input") |use_tool_prompt|llm|
 
 # 如果需要使用搜索工具，则通过模型提取搜索内容,然后使用搜索工具搜索结果
 get_search_query_prompt = ChatPromptTemplate.from_template(load_prompt("demo3/prompt/search_query.prompt"))
+
+get_url_prompt = ChatPromptTemplate.from_template(load_prompt("demo3/prompt/get_url.prompt"))
 def get_answer(search_result):
     if "answer_box" in search_result:
         return search_result["answer_box"]
     elif "organic_results" in search_result:
-        return search_result["organic_results"]
+        results=[]
+        organic_results = search_result["organic_results"]
+        for organic_result in organic_results:
+            results.append({'title':organic_result['title'],'link':organic_result['link'],'snippet':organic_result['snippet']})
+        return results
     else:
         return search_result
     
@@ -39,7 +45,7 @@ search_with_tool ={
 excute_task_by_llm_prompt = ChatPromptTemplate.from_template(load_prompt("demo3/prompt/excute_by_llm.prompt"))
 answer_by_llm = {"result":itemgetter("task") |excute_task_by_llm_prompt|llm|StrOutputParser()}
 
-get_html_by_tool = {}
+get_html_by_tool = {"result":itemgetter("task") |get_url_prompt|llm|StrOutputParser()|RunnableLambda(get_html)}
 
 branch = RunnableBranch(
         (lambda x:x["use_search_tool"] == '1', search_with_tool),

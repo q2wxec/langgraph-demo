@@ -7,8 +7,9 @@ from execution_agent import agent_executor
 from check_result_agent import result_checker
 
 async def execute_step(state: PlanExecute):
+    objective = state["input"]
     task = state["plan"][0]
-    agent_response = await agent_executor.ainvoke({"input": task, "chat_history": []})
+    agent_response = await agent_executor.ainvoke({"objective":objective,"input": task, "chat_history": []})
     return {
         "past_steps": (task, agent_response["result"])
     }
@@ -83,9 +84,11 @@ def demo3():
 
 
     from langchain_core.messages import HumanMessage
-
+    #请列举陕西省申报绿色矿山的明细要求?
+    #山西省煤税目原矿税率现在是多少？
+    #矿山安全标准是如何制定的
     config = {"recursion_limit": 50}
-    inputs = {"input": "请列举陕西省申报绿色矿山的明细要求?"}
+    inputs = {"input": "山西省煤税目原矿税率现在是多少？"}
     print()
     async def print_event():
         async for event in app.astream(inputs, config=config):
