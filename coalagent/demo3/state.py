@@ -1,4 +1,3 @@
-from langchain_core.pydantic_v1 import BaseModel, Field
 from typing import List, Tuple, Annotated, TypedDict
 import operator
 
