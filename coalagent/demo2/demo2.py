@@ -196,7 +196,7 @@ def demo2():
 
     asyncio.run(print_event())
 
-import os
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"]="coal-agent" 
+# import os
+# os.environ["LANGCHAIN_TRACING_V2"] = "true"
+# os.environ["LANGCHAIN_PROJECT"]="coal-agent" 
 demo2()
