@@ -49,4 +49,4 @@ app = workflow.compile()
 import os
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"]="wolf-game"
-app.invoke({"stage":"start","round":1})
+app.invoke({"stage":"start","round":1},{"recursion_limit": 1000})
