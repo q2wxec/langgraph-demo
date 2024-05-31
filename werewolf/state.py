@@ -10,5 +10,6 @@ class GameState(TypedDict):
     stage:str = 'start' #游戏阶段，start,speak,vote,end
     vote_store:Annotated[List[Tuple], operator.add] #投票记录
     next_speaker:str = "" #下一位发言者
+    round:int = 1 #游戏回合数
     
     

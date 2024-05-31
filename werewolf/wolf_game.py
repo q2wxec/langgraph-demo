@@ -41,3 +41,5 @@ workflow.add_conditional_edges(
 )
 
 app = workflow.compile()
+
+app.invoke({"stage":"start","round":1})
