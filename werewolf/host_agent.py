@@ -77,12 +77,13 @@ def ask_for_vote(state: GameState):
         if human_vote_count > totle_votes / 2:
             state['stage'] = 'end'
             print("AI win!")
-            print("投票详情如下："+json.dumps(vote_store))
+            print("投票详情如下："+json.dumps(vote_store, ensure_ascii=False))
         elif round == 3:
             state['stage'] = 'end'
             print("Human存活超过3轮，Human win!")
         else:
             print("Human存活,游戏继续！")
+            print("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False))
             state = gen_and_dispatch_role(state)
         return state
     next = random.choice(list(state['waiting']))
