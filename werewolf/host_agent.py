@@ -12,10 +12,10 @@ def gen_and_dispatch_role(state: GameState):
     first_init = not roles
     # 初始化角色
     if first_init:
-        roles = {"亚里士多德","莫扎特","达芬奇","成吉思汗","克利奥帕特拉七世"}  
+        roles = ["亚里士多德","莫扎特","达芬奇","成吉思汗","克利奥帕特拉七世"]  
         state['roles'] = roles.copy()
         # 从roles中随机选取一个确定人类玩家角色
-        human_role = random.choice(list(roles))
+        human_role = random.choice(roles)
         state['human_role'] = human_role
         state['chat_history'] = []
         roles_str = ','.join(roles)
@@ -23,9 +23,9 @@ def gen_and_dispatch_role(state: GameState):
     # 初始化待发言池
     state['waiting'] = roles.copy()
     # 选取下一个发言的角色，并从待发言池移除
-    next = random.choice(list(state['waiting']))
+    next = random.choice(state['waiting'])
     state['next_speaker'] = next
-    state['waiting'].discard(next)
+    state['waiting'].remove(next)
     # 修改游戏状态
     state['stage'] = 'speak'
     # 初始化聊天记录及投票
@@ -54,12 +54,12 @@ def ask_for_speak(state: GameState):
     chain = choose_prompt|llm|StrOutputParser()
     role_chosen = chain.invoke({"history": last_chat_str, "waitings": waiting_roles_str})
     if role_chosen in state['waiting']:
-        state['waiting'].discard(role_chosen)
+        state['waiting'].remove(role_chosen)
         state['next_speaker'] = role_chosen
     else:
-        next = random.choice(list(state['waiting']))
+        next = random.choice(state['waiting'])
         state['next_speaker'] = next
-        state['waiting'].discard(next)
+        state['waiting'].remove(next)
     return state
 def ask_for_vote(state: GameState):
     if len(state['waiting']) == 0:
@@ -86,9 +86,9 @@ def ask_for_vote(state: GameState):
             print("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False))
             state = gen_and_dispatch_role(state)
         return state
-    next = random.choice(list(state['waiting']))
+    next = random.choice(state['waiting'])
     state['next_speaker'] = next
-    state['waiting'].discard(next)
+    state['waiting'].remove(next)
     return state
 
 def host(state: GameState):
