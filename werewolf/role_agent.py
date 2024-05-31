@@ -32,7 +32,7 @@ def vote(state: GameState):
     history = ""
     for chat in chat_history:
         history += f"{chat[0]}: {chat[1]}\n"
-    llm = ChatOpenAI(model="glm-4",  temperature=0.3)
+    llm = ChatOpenAI(model="glm-4",  temperature=0.01)
     vote_prompt = ChatPromptTemplate.from_template(load_prompt("prompt/vote.prompt"))
     chain = vote_prompt|llm|JsonOutputParser()
     output = chain.invoke({"role": role, "roles": roles_str, "history": history})

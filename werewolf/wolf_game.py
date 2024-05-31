@@ -1,5 +1,4 @@
 
-import asyncio
 from state import GameState
 from host_agent import host
 from role_agent import role_play
@@ -42,4 +41,12 @@ workflow.add_conditional_edges(
 
 app = workflow.compile()
 
+# import asyncio
+# async def start():
+#     await app.ainvoke({"stage":"start","round":1})
+
+# asyncio.run(start())
+import os
+os.environ["LANGCHAIN_TRACING_V2"] = "true"
+os.environ["LANGCHAIN_PROJECT"]="wolf-game"
 app.invoke({"stage":"start","round":1})

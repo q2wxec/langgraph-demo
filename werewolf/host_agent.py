@@ -4,6 +4,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from load_prompt import load_prompt
 from langchain_core.output_parsers import StrOutputParser
+import json
 
 def gen_and_dispatch_role(state: GameState):
     roles = state['roles']
@@ -12,7 +13,7 @@ def gen_and_dispatch_role(state: GameState):
     # 初始化角色
     if first_init:
         roles = {"亚里士多德","莫扎特","达芬奇","成吉思汗","克利奥帕特拉七世"}  
-        state['roles'] = roles
+        state['roles'] = roles.copy()
         # 从roles中随机选取一个确定人类玩家角色
         human_role = random.choice(list(roles))
         state['human_role'] = human_role
@@ -20,7 +21,7 @@ def gen_and_dispatch_role(state: GameState):
         roles_str = ','.join(roles)
         print(f"主持人：欢迎大家参加今天的AI狼人杀游戏，今天参加游戏的角色有： {roles_str}")
     # 初始化待发言池
-    state['waiting'] = roles
+    state['waiting'] = roles.copy()
     # 选取下一个发言的角色，并从待发言池移除
     next = random.choice(list(state['waiting']))
     state['next_speaker'] = next
@@ -34,15 +35,16 @@ def gen_and_dispatch_role(state: GameState):
     
     print("---------------------------")
     round+=1
+    state['round'] = round
     return state
 
 def ask_for_speak(state: GameState):
     # 如果待发言池为空，则进入投票阶段
     if len(state['waiting']) == 0:
-        state['waiting'] = state['roles']
+        state['waiting'] = state['roles'].copy()
         state['stage'] = 'vote'
         print(f"主持人：游戏结束，请进行投票。请大家耐心等待投票结果！")
-        return state
+        return ask_for_vote(state)
     chat_history = state['chat_history']
     last_chat = chat_history[-1]
     last_chat_str = last_chat[0]+': '+last_chat[1]
@@ -75,11 +77,13 @@ def ask_for_vote(state: GameState):
         if human_vote_count > totle_votes / 2:
             state['stage'] = 'end'
             print("AI win!")
-            print("投票详情如下："+vote_store)
+            print("投票详情如下："+json.dumps(vote_store))
         elif round == 3:
+            state['stage'] = 'end'
             print("Human存活超过3轮，Human win!")
         else:
-            gen_and_dispatch_role(state)
+            print("Human存活,游戏继续！")
+            state = gen_and_dispatch_role(state)
         return state
     next = random.choice(list(state['waiting']))
     state['next_speaker'] = next
