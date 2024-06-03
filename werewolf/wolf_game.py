@@ -103,7 +103,21 @@ app = workflow.compile()
 #     await app.ainvoke({"stage":"start","round":1})
 
 # asyncio.run(start())
+
 import os
 os.environ["LANGCHAIN_TRACING_V2"] = "true"
 os.environ["LANGCHAIN_PROJECT"]="wolf-game"
 app.invoke({"round":0,"end":False},{"recursion_limit": 1000})
+
+# 流程图片打印
+# from langchain_core.runnables.graph import MermaidDrawMethod
+# from PIL import Image
+# from io import BytesIO
+
+# image_stream = BytesIO(
+#     app.get_graph().draw_mermaid_png(
+#         draw_method=MermaidDrawMethod.API,
+#     )
+# )
+# img = Image.open(image_stream)
+# img.show()
