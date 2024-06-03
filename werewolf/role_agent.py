@@ -9,8 +9,9 @@ def speak(state: GameState):
     roles_str = ','.join(state['roles'])
     chat_history = state['chat_history']
     history = ""
-    for chat in chat_history:
-        history += f"{chat[0]}: {chat[1]}\n"
+    if chat_history:
+        for chat in chat_history:
+            history += f"{chat[0]}: {chat[1]}\n"
     llm = ChatOpenAI(model="glm-4",  temperature=0.8)
     role_prompt = ChatPromptTemplate.from_template(load_prompt("prompt/role.prompt"))
     chain = role_prompt|llm|StrOutputParser()
@@ -22,8 +23,8 @@ def speak(state: GameState):
         print(token, end='', flush=True)
     print()
     print("---------------------------")
-    state['chat_history'].append((role, output))
-    return state
+    return {'chat_history':[(role, output)]}
+
 
 def vote(state: GameState):
     role = state['next_speaker']
@@ -36,13 +37,14 @@ def vote(state: GameState):
     vote_prompt = ChatPromptTemplate.from_template(load_prompt("prompt/vote.prompt"))
     chain = vote_prompt|llm|JsonOutputParser()
     output = chain.invoke({"role": role, "roles": roles_str, "history": history})
-    state['vote_store'].append((role, output))
-    return state
+    vote_store = state['vote_store']
+    vote_store.append((role, output))
+    return {'vote_store': vote_store}
 
-def role_play(state: GameState):
-    stage = state['stage']
-    if stage == 'speak':
-        return speak(state)
-    elif stage == 'vote':
-        return vote(state)
+# def role_play(state: GameState):
+#     stage = state['stage']
+#     if stage == 'speak':
+#         return speak(state)
+#     elif stage == 'vote':
+#         return vote(state)
     
