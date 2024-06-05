@@ -41,8 +41,4 @@ poetry.lock
 .gitignore
 chainlit.md
 pyproject.toml
-werewolf/chainlit.py
-werewolf/host_agent.py
-werewolf/human_agent.py
-werewolf/role_agent.py
-werewolf/wolf_game.py
+
