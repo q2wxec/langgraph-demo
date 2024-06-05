@@ -6,6 +6,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from load_prompt import load_prompt
 from langchain_core.output_parsers import StrOutputParser
 import json
+import chainlit as cl
 
 def gen_and_dispatch_role(state: GameState):
     roles = state['roles']

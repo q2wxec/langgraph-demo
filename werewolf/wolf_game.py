@@ -98,16 +98,19 @@ workflow.add_conditional_edges(
 
 app = workflow.compile()
 
+config = {"recursion_limit": 1000}
+inputs = {"round":0,"end":False}
+
 # import asyncio
 # async def start():
-#     await app.ainvoke({"stage":"start","round":1})
+#     await app.ainvoke(inputs,config)
 
 # asyncio.run(start())
 
-import os
-os.environ["LANGCHAIN_TRACING_V2"] = "true"
-os.environ["LANGCHAIN_PROJECT"]="wolf-game"
-app.invoke({"round":0,"end":False},{"recursion_limit": 1000})
+# import os
+# os.environ["LANGCHAIN_TRACING_V2"] = "true"
+# os.environ["LANGCHAIN_PROJECT"]="wolf-game"
+#app.invoke(inputs,config)
 
 # 流程图片打印
 # from langchain_core.runnables.graph import MermaidDrawMethod
@@ -121,3 +124,19 @@ app.invoke({"round":0,"end":False},{"recursion_limit": 1000})
 # )
 # img = Image.open(image_stream)
 # img.show()
+
+# import asyncio
+# async def print_event():
+#     async for event in app.astream_events(inputs, config=config, version="v1"):
+#         kind = event["event"]
+#         if kind == "on_chat_model_stream":
+#             content = event["data"]["chunk"].content
+#             if content:
+#                 # Empty content in the context of OpenAI or Anthropic usually means
+#                 # that the model is asking for a tool to be invoked.
+#                 # So we only print non-empty content
+#                 print(content, end="|")
+#         else:
+#             print("-")
+
+# asyncio.run(print_event())
