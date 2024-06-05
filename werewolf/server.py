@@ -1,4 +1,4 @@
-from wolf_game import app as agent
+from wolf_game import workflow
 
 #!/usr/bin/env python
 from fastapi import FastAPI
@@ -12,7 +12,7 @@ app = FastAPI(
 
 add_routes(
     app,
-    agent,
+    workflow.compile(),
     path="/agent",
 )
 

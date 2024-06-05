@@ -1,9 +1,11 @@
 import chainlit as cl
-from wolf_game import app
+from wolf_game import workflow
+
 
 
 @cl.on_chat_start
 def start():
+    app = workflow.compile()
     cl.user_session.set("agent", app)
 
 

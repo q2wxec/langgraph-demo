@@ -96,7 +96,7 @@ workflow.add_conditional_edges(
      {"start": "start", END: END},
 )
 
-app = workflow.compile()
+# app = workflow.compile()
 
 config = {"recursion_limit": 1000}
 inputs = {"round":0,"end":False}
