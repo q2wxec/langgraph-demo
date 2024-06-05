@@ -8,7 +8,7 @@ from langchain_core.output_parsers import StrOutputParser
 import json
 import chainlit as cl
 
-def gen_and_dispatch_role(state: GameState):
+async def gen_and_dispatch_role(state: GameState):
     roles = state['roles']
     round = state['round'] + 1
     human_role = state['human_role']
@@ -19,7 +19,7 @@ def gen_and_dispatch_role(state: GameState):
         # 从roles中随机选取一个确定人类玩家角色
         human_role = random.choice(roles)
         roles_str = ','.join(roles)
-        print(f"主持人：欢迎大家参加今天的AI狼人杀游戏，今天参加游戏的角色有： {roles_str}")
+        await cl.Message(content=f"主持人：欢迎大家参加今天的AI狼人杀游戏，今天参加游戏的角色有： {roles_str}").send()
     # 初始化待发言池
     waiting = roles.copy()
     # 选取下一个发言的角色，并从待发言池移除
@@ -29,8 +29,8 @@ def gen_and_dispatch_role(state: GameState):
     # state['stage'] = 'speak'
     # 初始化聊天记录及投票
     # print(f"主持人：接下来我们开始游戏的第{round}轮发言，请{next}首先发言。")
-    print(f"主持人：接下来我们开始游戏的第{round}轮发言")
-    print("---------------------------")
+    await cl.Message(content=f"主持人：接下来我们开始游戏的第{round}轮发言").send()
+    #print("---------------------------")
     return {'roles':roles,'human_role':human_role,'waiting':waiting,'vote_store':[],'round':round}
 
 def ask_for_speak(state: GameState):
@@ -93,10 +93,11 @@ def ask_for_vote(state: GameState):
     waiting.remove(next)
     return {'waiting':waiting,'next_speaker':next_speaker}
 
-def count_vote(state: GameState):
+async def count_vote(state: GameState):
     # 统计票数决定是否结束游戏
     vote_store = state['vote_store']
     human_role = state['human_role']
+    round = state['round']
     human_vote_count = 0
     for vote in vote_store:
         vote_role = vote[1]['vote']
@@ -105,15 +106,15 @@ def count_vote(state: GameState):
         totle_votes = len(state['roles'])
         # 如果人类角色票数超过一半，结束游戏
         if human_vote_count > totle_votes / 2:
-            print("AI win!")
-            print("投票详情如下："+json.dumps(vote_store, ensure_ascii=False))
+            await cl.Message(content="AI win!").send()
+            await cl.Message(content="投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
             return {'end':True}
         elif round == 3:
-            print("Human存活超过3轮，Human win!")
+            await cl.Message("Human存活超过3轮，Human win!").send()
             return {'end':True}
         else:
-            print("Human存活,游戏继续！")
-            print("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False))
+            await cl.Message("Human存活,游戏继续！").send()
+            await cl.Message("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
             return {'end':False}
 
 # def host(state: GameState):

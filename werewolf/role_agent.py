@@ -3,6 +3,7 @@ from langchain_openai import ChatOpenAI
 from langchain_core.prompts import ChatPromptTemplate
 from load_prompt import load_prompt
 from langchain_core.output_parsers import StrOutputParser,JsonOutputParser
+import chainlit as cl
 
 async def speak(state: GameState):
     role = state['next_speaker']
@@ -15,14 +16,16 @@ async def speak(state: GameState):
     llm = ChatOpenAI(model="glm-4",  temperature=0.8, streaming=True)
     role_prompt = ChatPromptTemplate.from_template(load_prompt("prompt/role.prompt"))
     chain = role_prompt|llm|StrOutputParser()
-    rsp = await chain.ainvoke({"role": role, "roles": roles_str, "history": history})
+    rsp = chain.stream({"role": role, "roles": roles_str, "history": history})
     output = ''
-    print(role+':', end='', flush=True)
+    msg = cl.Message(content="")
+    await msg.send()
+    await msg.stream_token(role+':')
     for token in rsp:
         output += token
-        print(token, end='', flush=True)
-    print()
-    print("---------------------------")
+        await msg.stream_token(token)
+    # print()
+    # print("---------------------------")
     return {'chat_history':[(role, output)]}
 
 
