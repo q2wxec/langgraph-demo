@@ -26,6 +26,7 @@ async def speak(state: GameState):
         await msg.stream_token(token)
     # print()
     # print("---------------------------")
+    await msg.update()
     return {'chat_history':[(role, output)]}
 
 
