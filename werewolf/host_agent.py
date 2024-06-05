@@ -98,24 +98,25 @@ async def count_vote(state: GameState):
     vote_store = state['vote_store']
     human_role = state['human_role']
     round = state['round']
+    roles = state['roles']
     human_vote_count = 0
+    totle_votes = len(roles)
     for vote in vote_store:
         vote_role = vote[1]['vote']
         if vote_role == human_role:
             human_vote_count +=1
-        totle_votes = len(state['roles'])
-        # 如果人类角色票数超过一半，结束游戏
-        if human_vote_count > totle_votes / 2:
-            await cl.Message(content="AI win!").send()
-            await cl.Message(content="投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
-            return {'end':True}
-        elif round == 3:
-            await cl.Message("Human存活超过3轮，Human win!").send()
-            return {'end':True}
-        else:
-            await cl.Message("Human存活,游戏继续！").send()
-            await cl.Message("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
-            return {'end':False}
+    # 如果人类角色票数超过一半，结束游戏
+    if human_vote_count > totle_votes / 2:
+        await cl.Message(content="AI win!").send()
+        await cl.Message(content="投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
+        return {'end':True}
+    elif round == 3:
+        await cl.Message("Human存活超过3轮，Human win!").send()
+        return {'end':True}
+    else:
+        await cl.Message("Human存活,游戏继续！").send()
+        await cl.Message("上轮投票详情如下："+json.dumps(vote_store, ensure_ascii=False)).send()
+        return {'end':False}
 
 # def host(state: GameState):
 #     stage = state['stage']
