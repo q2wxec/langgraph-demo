@@ -9,6 +9,7 @@ async def speak(state: GameState):
     role = state['next_speaker']
     roles_str = ','.join(state['roles'])
     chat_history = state['chat_history']
+    waiting = ','.join(state['waiting'])
     history = ""
     if chat_history:
         for chat in chat_history:
@@ -16,7 +17,7 @@ async def speak(state: GameState):
     llm = ChatOpenAI(model="glm-4",  temperature=0.8, streaming=True)
     role_prompt = ChatPromptTemplate.from_template(load_prompt("prompt/role.prompt"))
     chain = role_prompt|llm|StrOutputParser()
-    rsp = chain.stream({"role": role, "roles": roles_str, "history": history})
+    rsp = chain.stream({"role": role, "roles": roles_str, "history": history,"waiting": waiting})
     output = ''
     msg = cl.Message(content="")
     await msg.send()
