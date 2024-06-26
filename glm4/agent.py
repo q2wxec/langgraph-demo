@@ -84,5 +84,11 @@ async def deal_tool_output(msg, chunk_tool_calls, tool_type):
     if tool_type == 'web_browser':
         await msg.stream_token(f"\n执行检索,请求结果,查询到相关信息{len(outputs)}条")
     elif tool_type == 'drawing_tool':
-        await msg.stream_token(f"\n完成绘图！")
-        await msg.stream_token(f"\n![image]({outputs[0]['image']})")
+        # await msg.stream_token(f"\n完成绘图！")
+        # await msg.stream_token(f"\n![image]({outputs[0]['image']})")
+        image = cl.Image(url=outputs[0]['image'], name="image", display="inline")
+        # Attach the image to the message
+        await cl.Message(
+            content="完成绘图",
+            elements=[image],
+        ).send()
