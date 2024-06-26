@@ -80,7 +80,7 @@ workflow.add_conditional_edges(
 # Finally, we compile it!
 # This compiles it into a LangChain Runnable,
 # meaning you can use it as you would any other runnable
-app = workflow.compile()
+# app = workflow.compile()
 
 # import os
 # os.environ["LANGCHAIN_TRACING_V2"] = "true"

@@ -19,7 +19,8 @@ langchainhub = "^0.1.15"
 duckduckgo-search = "^5.3.0"
 langserve = {extras = ["all"], version = "^0.2.1"}
 langgraph-cli = "^0.1.23"
-chainlit = "^1.1.202"
+chainlit = "^1.1.304"
+zhipuai = "^2.1.1.20240620.1"
 
 
 [build-system]
