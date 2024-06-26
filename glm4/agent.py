@@ -12,8 +12,6 @@ async def glm4_call(req):
     current_type = None
     tool_calls = None
     msg = None
-    step = None
-    step_input = ''
     for chunk in response_chunks:
         delta = chunk.choices[0].delta
         # 获取chunk中的类型和内容
@@ -50,7 +48,6 @@ async def glm4_call(req):
             #         step.input = step_input
             #         step.output = str(chunk_tool_calls[0].model_extra[tool_type]['outputs'])
             #         await step.update()
-                step_input = ''
             current_type = chunk_type
             tool_calls = is_tool_calls
             
