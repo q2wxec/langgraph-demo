@@ -38,8 +38,9 @@ async def glm4_call(req):
                     await msg.update()
                 msg = cl.Message(content="")
                 await msg.send()
-                await msg.stream_token(f"--- 执行工具调用:{tool_type} ---\n")
-                await msg.stream_token(f"--- 请求入参:---\n")
+                await msg.stream_token(f"\n执行工具调用:{tool_type},请求入参: ")
+                if tool_type == 'code_interpreter':
+                    await msg.stream_token(f"\n```\n")
                 # print(f"--- 执行工具调用:{tool_type} ---")
             # elif chunk_type == "tool" and is_tool_calls:
             #     # print(f"--- 完成工具调用 ---")
@@ -57,6 +58,8 @@ async def glm4_call(req):
             tool_type = chunk_tool_calls[0].type
             step_input+=chunk_tool_calls[0].model_extra[tool_type]['input']
             await msg.stream_token(chunk_tool_calls[0].model_extra[tool_type]['input'])
+            if tool_type == 'code_interpreter' and chunk.choices[0].finish_reason == 'tool_calls':
+                    await msg.stream_token(f"\n```\n")
         
         if chunk_type == "tool" and is_tool_calls:
             tool_type = chunk_tool_calls[0].type
@@ -72,7 +75,7 @@ async def glm4_call(req):
 async def deal_tool_output(msg, chunk_tool_calls, tool_type):
     outputs = chunk_tool_calls[0].model_extra[tool_type]['outputs']
     if tool_type == 'web_browser':
-        await msg.stream_token(f"\n---执行检索,请求结果---\n查询到相关信息{len(outputs)}条\n")
+        await msg.stream_token(f"\n执行检索,请求结果,查询到相关信息{len(outputs)}条")
     elif tool_type == 'drawing_tool':
-        await msg.stream_token(f"\n---执行绘图---\n")
-        await msg.stream_token(f"\n![]({outputs[0]['image']})\n")
+        await msg.stream_token(f"\n完成绘图！")
+        await msg.stream_token(f"\n![image]({outputs[0]['image']})")
