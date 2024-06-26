@@ -36,7 +36,10 @@ req={
             "type": "web_browser"
         },
         {
-            "type": "code_interpreter"
+            "type": "code_interpreter",
+            "code_interpreter":{
+                "sandbox":"auto"
+            }
         },
         {
             "type": "drawing_tool"
