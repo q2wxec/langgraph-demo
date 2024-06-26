@@ -12,6 +12,7 @@ async def glm4_call(req):
     current_type = None
     tool_calls = None
     msg = None
+    code = ''
     for chunk in response_chunks:
         delta = chunk.choices[0].delta
         # 获取chunk中的类型和内容
@@ -54,8 +55,10 @@ async def glm4_call(req):
             
         if chunk_type == "assistant" and is_tool_calls:
             tool_type = chunk_tool_calls[0].type
-            code+=chunk_tool_calls[0].model_extra[tool_type]['input']
+            
             await msg.stream_token(chunk_tool_calls[0].model_extra[tool_type]['input'])
+            if tool_type == 'code_interpreter' :
+                code+=chunk_tool_calls[0].model_extra[tool_type]['input']
             if tool_type == 'code_interpreter' and chunk.choices[0].finish_reason == 'tool_calls':
                     await msg.stream_token(f"\n```\n")
                     # Sending an action button within a chatbot message
